@@ -15,6 +15,12 @@ from .serializers import HelloWorldSerializer
 from .serializers import SubscriberSerializer
 from .models import Subscriber
 
+from rest_framework.viewsets import ModelViewSet
+
+from django.contrib.auth import authenticate
+from rest_framework.status import HTTP_401_UNAUTHORIZED
+from rest_framework.authtoken.models import Token
+
 
 # Create your views here.
 def hello_world(request):
@@ -73,3 +79,20 @@ class HelloWorldView(APIView):
 class SubscriberView(ListCreateAPIView):
     serializer_class = SubscriberSerializer
     queryset = Subscriber.objects.all()
+
+class SubscriberViewSet(ModelViewSet):
+    serializer_class = SubscriberSerializer
+    queryset = Subscriber.objects.all()
+
+
+@api_view(["POST"])
+def login(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    user = authenticate(username=username, password=password)
+    if not user:
+        return Response({"error": "Login failed"}, status=HTTP_401_UNAUTHORIZED)
+
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response({"token": token.key})
