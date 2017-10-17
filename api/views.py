@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
+from rest_framework.generics import ListAPIView, CreateAPIView
+
 
 # For DRF
 from rest_framework.views import APIView
@@ -47,24 +49,27 @@ class HelloWorldView(APIView):
             return Response({"message": "Hello {}, you're {} years old".format(name, age)})
         else:
             return Response({"errors": serializer.errors})
+        # name = request.data.get("name")
+        # if not name:
+        #     return Response({"error": "No name passed"})
+        # return Response({"message": "Hello {}!".format(name)})
 
-        name = request.data.get("name")
-        if not name:
-            return Response({"error": "No name passed"})
-        return Response({"message": "Hello {}!".format(name)})
 
+# class SubscriberView(APIView):
+#     def get(self, request):
+#         all_subscribers = Subscriber.objects.all()
+#         serialized_subscribers = SubscriberSerializer(all_subscribers, many=True)
+#         return Response(serialized_subscribers.data)
+#         # return Response({"message": "Hello World!"})
+#
+#     def post(self, request):
+#         serializer = SubscriberSerializer(data=request.data)
+#         if serializer.is_valid():
+#             subscriber_instance = Subscriber.objects.create(**serializer.data)
+#             return Response({"message": "Created subscriber {}". format(subscriber_instance.id)})
+#         else:
+#             return Response({"errors": serializer.errors})
 
-class SubscriberView(APIView):
-    def get(self, request):
-        all_subscribers = Subscriber.objects.all()
-        serialized_subscribers = SubscriberSerializer(all_subscribers, many=True)
-        return Response(serialized_subscribers.data)
-        # return Response({"message": "Hello World!"})
-
-    def post(self, request):
-        serializer = SubscriberSerializer(data=request.data)
-        if serializer.is_valid():
-            subscriber_instance = Subscriber.objects.create(**serializer.data)
-            return Response({"message": "Created subscriber {}". format(subscriber_instance.id)})
-        else:
-            return Response({"errors": serializer.errors})
+class SubscriberView(ListAPIView, CreateAPIView):
+    serializer_class = SubscriberSerializer
+    queryset = Subscriber.objects.all()
