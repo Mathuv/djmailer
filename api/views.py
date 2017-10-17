@@ -20,6 +20,7 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import authenticate
 from rest_framework.status import HTTP_401_UNAUTHORIZED
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -83,6 +84,7 @@ class SubscriberView(ListCreateAPIView):
 class SubscriberViewSet(ModelViewSet):
     serializer_class = SubscriberSerializer
     queryset = Subscriber.objects.all()
+    permission_classes = (IsAuthenticated,)
 
 
 @api_view(["POST"])
