@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 
 # For DRF
@@ -70,6 +70,6 @@ class HelloWorldView(APIView):
 #         else:
 #             return Response({"errors": serializer.errors})
 
-class SubscriberView(ListAPIView, CreateAPIView):
+class SubscriberView(ListCreateAPIView):
     serializer_class = SubscriberSerializer
     queryset = Subscriber.objects.all()
