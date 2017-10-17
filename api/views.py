@@ -10,6 +10,9 @@ from rest_framework.decorators import api_view
 
 # After adding serializers
 from .serializers import HelloWorldSerializer
+from .serializers import SubscriberSerializer
+from .models import Subscriber
+
 
 # Create your views here.
 def hello_world(request):
@@ -49,3 +52,19 @@ class HelloWorldView(APIView):
         if not name:
             return Response({"error": "No name passed"})
         return Response({"message": "Hello {}!".format(name)})
+
+
+class SubscriberView(APIView):
+    def get(self, request):
+        all_subscribers = Subscriber.objects.all()
+        serialized_subscribers = SubscriberSerializer(all_subscribers, many=True)
+        return Response(serialized_subscribers.data)
+        # return Response({"message": "Hello World!"})
+
+    def post(self, request):
+        serializer = SubscriberSerializer(data=request.data)
+        if serializer.is_valid():
+            subscriber_instance = Subscriber.objects.create(**serializer.data)
+            return Response({"message": "Created subscriber {}". format(subscriber_instance.id)})
+        else:
+            return Response({"errors": serializer.errors})
