@@ -1,12 +1,17 @@
 from django.conf.urls import url
 
-# from .views import hello_world
+from .views import hello_world
 
-# for DRF
+# for DRF class view
 from .views import HelloWorldView
 
-urlpatterns = [
-    # url(r'^hello', hello_world, name="hello_world")
-    url(r'^hello', HelloWorldView.as_view(), name="hello_world")
+# DRF function view
+from .views import hello_world_function
 
+
+
+urlpatterns = [
+    url(r'^hello_plain', hello_world, name="hello_world_plain"),
+    url(r'^hello', HelloWorldView.as_view(), name="hello_world"),
+    url(r'^hello_function', hello_world_function, name="hello_world_function"),
 ]
