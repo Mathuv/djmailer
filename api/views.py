@@ -8,6 +8,9 @@ from rest_framework.response import Response
 # For function based view
 from rest_framework.decorators import api_view
 
+# After adding serializers
+from .serializers import HelloWorldSerializer
+
 # Create your views here.
 def hello_world(request):
     return JsonResponse({"message": "hello world!"})
@@ -31,6 +34,17 @@ class HelloWorldView(APIView):
 
 
     def post(self, request):
+        serializer = HelloWorldSerializer(data=request.data)
+        if serializer.is_valid():
+            valid_data = serializer.data
+
+            name = valid_data.get("name")
+            age = valid_data.get("age")
+
+            return Response({"message": "Hello {}, you're {} years old".format(name, age)})
+        else:
+            return Response({"errors": serializer.errors})
+
         name = request.data.get("name")
         if not name:
             return Response({"error": "No name passed"})
